@@ -1,0 +1,20 @@
+{
+  "fatores_grupo_a": [
+    {
+      "tipo": "Tomada (Área Administrativa)",
+      "fator": 1.0
+    },
+    {
+      "tipo": "Tomada (Área Industrial Mono)",
+      "fator": 0.6
+    },
+    {
+      "tipo": "Tomada (Área Industrial Tri)",
+      "fator": 0.3
+    },
+    {
+      "tipo": "Iluminação",
+      "fator": 1.0
+    }
+  ]
+}

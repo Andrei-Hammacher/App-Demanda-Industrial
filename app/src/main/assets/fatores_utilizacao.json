@@ -1,0 +1,34 @@
+{
+  "fatores_utilizacao": [
+    {
+      "descricao": "Motores 3/4 a 2,5 CV",
+      "potencia_min": 0.75,
+      "potencia_max": 2.5,
+      "fator": 0.70
+    },
+    {
+      "descricao": "Motores de 3 a 15 CV",
+      "potencia_min": 3.0,
+      "potencia_max": 15.0,
+      "fator": 0.83
+    },
+    {
+      "descricao": "Motores de 20 a 40 CV",
+      "potencia_min": 20.0,
+      "potencia_max": 40.0,
+      "fator": 0.85
+    },
+    {
+      "descricao": "Motores acima de 40 CV",
+      "potencia_min": 40.1,
+      "potencia_max": 9999.0,
+      "fator": 0.87
+    },
+    {
+      "descricao": "Fornos e Estufas",
+      "potencia_min": 0.0,
+      "potencia_max": 9999.0,
+      "fator": 1.00
+    }
+  ]
+}

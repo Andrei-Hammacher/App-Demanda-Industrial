@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#F8F9FA">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resumo da Demanda"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvResumoGrupoA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Grupo A (Ilum/Tom): 0.00 kVA"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/tvResumoGrupoB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Grupo B (Aquecim): 0.00 kVA"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/tvResumoGrupoC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Grupo C (Motores): 0.00 kVA"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                android:layout_marginVertical="8dp"/>
+
+            <TextView
+                android:id="@+id/tvTotalKva"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTAL: 0.00 kVA"
+                android:textColor="@color/design_default_color_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvFatorSimultaneidade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fator C aplicado: 1.00"
+                android:textSize="12sp"
+                android:textColor="#777777" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCargas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/list_item_equipment" />
+
+    <Button
+        android:id="@+id/btnAdicionarCarga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Adicionar Novo Equipamento" />
+</LinearLayout>

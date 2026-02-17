@@ -1,0 +1,16 @@
+{
+  "fatores_grupo_b": [
+    {
+      "tipo": "Forno a Resistência",
+      "fu": 1.0
+    },
+    {
+      "tipo": "Estufa / Caldeira",
+      "fu": 1.0
+    },
+    {
+      "tipo": "Aparelho de Aquecimento Geral",
+      "fu": 1.0
+    }
+  ]
+}
