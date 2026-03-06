@@ -125,16 +125,78 @@ class ListaCargasActivity : AppCompatActivity() {
         val fatorC = repository.buscarFatorSimultaneidade(qtdMotores, maiorPotenciaCv, "Motor")
         val demandaGrupoC = somaMotoresBruta * fatorC
 
-        val demandaTotal = grupoA + grupoB + demandaGrupoC
+        // --- NOVIDADE: GRUPOS D e E (Cargas Especiais e Outros) ---
+        val cargasEspeciais = listaEquipamentos.filter {
+            it.tipo.contains("Ar Condicionado", ignoreCase = true) ||
+                    it.tipo.contains("Solda", ignoreCase = true) ||
+                    it.tipo.contains("Outros", ignoreCase = true)
+        }.sumOf { it.potencia * it.quantidade }
+
+        // Atualizamos a demanda total somando as cargas especiais
+        val demandaTotal = grupoA + grupoB + demandaGrupoC + cargasEspeciais
+
+        // --- IMPLEMENTAÇÃO DA OPÇÃO 3: CÁLCULO DO FATOR DE POTÊNCIA GLOBAL ---
+
+        // 1. Calculamos a Potência Ativa (kW) estimada de cada grupo
+        val pGrupoA = grupoA * 1.0
+        val pGrupoB = grupoB * 1.0
+        val pGrupoC = demandaGrupoC * 0.85
+        // Ar Condicionado e Solda também são cargas mais indutivas, usamos média de 0.85
+        val pEspeciais = cargasEspeciais * 0.85
+
+        val potenciaAtivaTotal = pGrupoA + pGrupoB + pGrupoC + pEspeciais
+
+        // 2. FP Global = Potência Ativa Total (kW) / Potência Aparente Total (kVA)
+        val fpGlobal = if (demandaTotal > 0) potenciaAtivaTotal / demandaTotal else 1.0
+
+        // --- CÁLCULO: RESERVA DE CARGA E TRANSFORMADOR ---
+        val reservaCarga = demandaTotal * 0.10 // 10% de folga para expansão futura
+        val demandaComReserva = demandaTotal + reservaCarga
+
+        // Tabela padrão de Transformadores Comerciais (Trifásicos em kVA)
+        val trafosComerciais = listOf(15.0, 30.0, 45.0, 75.0, 112.5, 150.0, 225.0, 300.0, 500.0, 750.0, 1000.0)
+
+        // Busca o primeiro transformador que seja maior ou igual à nossa demanda final com reserva
+        val trafoIdeal = trafosComerciais.find { it >= demandaComReserva }
+        val textoTrafo = if (trafoIdeal != null) "$trafoIdeal kVA" else "Sob Consulta (>1000 kVA)"
 
         binding.apply {
             tvResumoGrupoA.text = "Grupo A (Ilum/Tom): ${"%.2f".format(grupoA)} kVA"
             tvResumoGrupoB.text = "Grupo B (Aquecim): ${"%.2f".format(grupoB)} kVA"
             tvResumoGrupoC.text = "Grupo C (Motores): ${"%.2f".format(demandaGrupoC)} kVA"
+
+            // --- ADICIONADO NA INTERFACE ---
+            tvResumoEspeciais.text = "Grupo D/E (Especiais): ${"%.2f".format(cargasEspeciais)} kVA"
+
             tvTotalKva.text = "Demanda Total: ${"%.2f".format(demandaTotal)} kVA"
 
             val categoria = definirNomeCategoria(maiorPotenciaCv)
             tvFatorSimultaneidade.text = "Fator C: ${"%.2f".format(fatorC)} (Cat: $categoria)"
+
+            // --- EXIBIÇÃO DA OPÇÃO 3 NA TELA ---
+            tvFpGlobal.text = "FP Global: ${"%.2f".format(fpGlobal)}"
+
+            if (fpGlobal < 0.92 && demandaTotal > 0) {
+                tvAlertaCapacitor.text = "⚠️ Atenção: FP < 0.92. Necessário Banco de Capacitores."
+                tvAlertaCapacitor.setTextColor(android.graphics.Color.RED)
+            } else if (demandaTotal > 0) {
+                tvAlertaCapacitor.text = "✅ FP dentro da norma (≥ 0.92)"
+                tvAlertaCapacitor.setTextColor(android.graphics.Color.parseColor("#388E3C")) // Verde padrão
+            } else {
+                // Limpa o texto se não houver demanda
+                tvAlertaCapacitor.text = ""
+            }
+
+            // --- PREENCHENDO OS NOVOS CAMPOS DE RESERVA E TRAFO ---
+            if (demandaTotal > 0) {
+                tvReservaCarga.text = "Reserva Crescimento (10%): ${"%.2f".format(reservaCarga)} kVA"
+                tvDemandaFinal.text = "Demanda c/ Reserva: ${"%.2f".format(demandaComReserva)} kVA"
+                tvTrafoSugerido.text = "Trafo Sugerido: $textoTrafo"
+            } else {
+                tvReservaCarga.text = "Reserva Crescimento (10%): 0.00 kVA"
+                tvDemandaFinal.text = "Demanda c/ Reserva: 0.00 kVA"
+                tvTrafoSugerido.text = "Trafo Sugerido: --"
+            }
         }
     }
 

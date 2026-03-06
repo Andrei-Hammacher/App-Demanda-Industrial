@@ -32,6 +32,8 @@ class AddEquipmentActivity : AppCompatActivity() {
             "Tomada (Área Industrial Mono)",
             "Tomada (Área Industrial Tri)",
             "Forno / Estufa (Aquecimento)",
+            "Ar Condicionado",         // <-- CARGA ESPECIAL
+            "Máquina de Solda",        // <-- CARGA ESPECIAL
             "Outros"
         )
         val adapterSpinner = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipos)
@@ -105,7 +107,22 @@ class AddEquipmentActivity : AppCompatActivity() {
                 demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
             }
 
-            else -> demandaCalculadaUnitaria = potenciaDigitada / 1000.0
+            // --- NOVIDADE: GRUPOS ESPECIAIS (D e E) ---
+
+            // GRUPO D: Ar Condicionado
+            tipo.contains("Ar Condicionado", ignoreCase = true) -> {
+                // FD de 100% (1.0) para climatização industrial/comercial
+                demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
+            }
+
+            // GRUPO E: Máquinas de Solda
+            tipo.contains("Solda", ignoreCase = true) -> {
+                // FD estimado de 70% (0.70) considerando o ciclo de trabalho da solda
+                demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 0.70
+            }
+
+            // OUTROS
+            else -> demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
         }
 
         val novoEquipamento = Equipamento(
@@ -121,7 +138,12 @@ class AddEquipmentActivity : AppCompatActivity() {
             database.equipamentoDao().inserir(novoEquipamento)
 
             runOnUiThread {
-                Toast.makeText(this@AddEquipmentActivity, "Salvo! FU usado: ${calcularFatorUtilizacao(potenciaDigitada)}", Toast.LENGTH_LONG).show()
+                // Ajuste para a mensagem de sucesso fazer mais sentido dependendo da carga
+                if (tipo.equals("Motor", ignoreCase = true)) {
+                    Toast.makeText(this@AddEquipmentActivity, "Salvo! FU usado: ${calcularFatorUtilizacao(potenciaDigitada)}", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this@AddEquipmentActivity, "Equipamento salvo com sucesso!", Toast.LENGTH_SHORT).show()
+                }
                 finish()
             }
         }
