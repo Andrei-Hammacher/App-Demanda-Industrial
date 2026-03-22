@@ -12,6 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjetoDemandaEletricaIndustrial">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"/>
+        </provider>
+
         <activity
             android:name=".SelecaoProjetoActivity"
             android:exported="false" />
@@ -26,6 +36,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.ProjetoDemandaEletricaIndustrial.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

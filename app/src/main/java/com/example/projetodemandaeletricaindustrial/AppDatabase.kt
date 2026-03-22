@@ -5,12 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// Aumentamos a versão para 2 e incluímos a Entidade Projeto
-@Database(entities = [Equipamento::class, Projeto::class], version = 2)
+@Database(entities = [Equipamento::class, Projeto::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun equipamentoDao(): EquipamentoDao
-    abstract fun projetoDao(): ProjetoDao // Adicionamos o novo DAO aqui
+    abstract fun projetoDao(): ProjetoDao
 
     companion object {
         @Volatile
@@ -23,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "demanda_industrial_db"
                 )
-                    .fallbackToDestructiveMigration() // Isso evita erros de versão durante o desenvolvimento
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

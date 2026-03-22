@@ -1,32 +1,31 @@
 [
-  {
-    "cv": 0.33,
-    "rendimento": 0.67,
-    "fp": 0.61
-  },
-  {
-    "cv": 0.5,
-    "rendimento": 0.68,
-    "fp": 0.66
-  },
-  {
-    "cv": 0.75,
-    "rendimento": 0.71,
-    "fp": 0.66
-  },
-  {
-    "cv": 1.0,
-    "rendimento": 0.79,
-    "fp": 0.69
-  },
-  {
-    "cv": 5.0,
-    "rendimento": 0.88,
-    "fp": 0.75
-  },
-  {
-    "cv": 10.0,
-    "rendimento": 0.89,
-    "fp": 0.77
-  }
+  { "cv": 0.33,  "rendimento": 0.67, "fp": 0.61 },
+  { "cv": 0.5,   "rendimento": 0.68, "fp": 0.66 },
+  { "cv": 0.75,  "rendimento": 0.71, "fp": 0.66 },
+  { "cv": 1.0,   "rendimento": 0.79, "fp": 0.69 },
+  { "cv": 1.5,   "rendimento": 0.79, "fp": 0.71 },
+  { "cv": 2.0,   "rendimento": 0.82, "fp": 0.72 },
+  { "cv": 3.0,   "rendimento": 0.83, "fp": 0.73 },
+  { "cv": 4.0,   "rendimento": 0.83, "fp": 0.74 },
+  { "cv": 5.0,   "rendimento": 0.88, "fp": 0.75 },
+  { "cv": 10.0,  "rendimento": 0.89, "fp": 0.77 },
+  { "cv": 12.5,  "rendimento": 0.88, "fp": 0.77 },
+  { "cv": 15.0,  "rendimento": 0.88, "fp": 0.77 },
+  { "cv": 20.0,  "rendimento": 0.90, "fp": 0.77 },
+  { "cv": 25.0,  "rendimento": 0.90, "fp": 0.81 },
+  { "cv": 30.0,  "rendimento": 0.90, "fp": 0.83 },
+  { "cv": 40.0,  "rendimento": 0.92, "fp": 0.84 },
+  { "cv": 50.0,  "rendimento": 0.92, "fp": 0.86 },
+  { "cv": 60.0,  "rendimento": 0.92, "fp": 0.86 },
+  { "cv": 75.0,  "rendimento": 0.92, "fp": 0.86 },
+  { "cv": 100.0, "rendimento": 0.93, "fp": 0.86 },
+  { "cv": 125.0, "rendimento": 0.94, "fp": 0.86 },
+  { "cv": 150.0, "rendimento": 0.94, "fp": 0.85 },
+  { "cv": 200.0, "rendimento": 0.95, "fp": 0.85 },
+  { "cv": 250.0, "rendimento": 0.94, "fp": 0.86 },
+  { "cv": 300.0, "rendimento": 0.95, "fp": 0.88 },
+  { "cv": 350.0, "rendimento": 0.95, "fp": 0.88 },
+  { "cv": 400.0, "rendimento": 0.95, "fp": 0.88 },
+  { "cv": 450.0, "rendimento": 0.95, "fp": 0.88 },
+  { "cv": 500.0, "rendimento": 0.95, "fp": 0.88 }
 ]

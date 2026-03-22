@@ -3,62 +3,236 @@
     {
       "categoria": "Motores: 3/4 a 2,5 CV",
       "tabela": [
-        { "quantidade": 2, "fator": 0.85 },
-        { "quantidade": 4, "fator": 0.80 },
-        { "quantidade": 5, "fator": 0.75 },
-        { "quantidade": 8, "fator": 0.70 },
-        { "quantidade": 10, "fator": 0.60 },
-        { "quantidade": 15, "fator": 0.55 },
-        { "quantidade": 20, "fator": 0.50 },
-        { "quantidade": 50, "fator": 0.40 }
+        {
+          "quantidade": 2,
+          "fator": 0.85
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.75
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.6
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.55
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.5
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.4
+        }
       ]
     },
     {
       "categoria": "Motores: 3 a 15 CV",
       "tabela": [
-        { "quantidade": 2, "fator": 0.85 },
-        { "quantidade": 4, "fator": 0.80 },
-        { "quantidade": 5, "fator": 0.75 },
-        { "quantidade": 8, "fator": 0.75 },
-        { "quantidade": 10, "fator": 0.70 },
-        { "quantidade": 15, "fator": 0.65 },
-        { "quantidade": 20, "fator": 0.55 },
-        { "quantidade": 50, "fator": 0.45 }
+        {
+          "quantidade": 2,
+          "fator": 0.85
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.75
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.75
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.65
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.55
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.45
+        }
       ]
     },
     {
       "categoria": "Motores: 20 a 40 CV",
       "tabela": [
-        { "quantidade": 2, "fator": 0.80 },
-        { "quantidade": 4, "fator": 0.80 },
-        { "quantidade": 5, "fator": 0.80 },
-        { "quantidade": 8, "fator": 0.75 },
-        { "quantidade": 10, "fator": 0.65 },
-        { "quantidade": 15, "fator": 0.60 },
-        { "quantidade": 20, "fator": 0.60 },
-        { "quantidade": 50, "fator": 0.50 }
+        {
+          "quantidade": 2,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.75
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.65
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.6
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.6
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.5
+        }
       ]
     },
     {
       "categoria": "Acima de 40 CV",
       "tabela": [
-        { "quantidade": 2, "fator": 0.90 },
-        { "quantidade": 4, "fator": 0.80 },
-        { "quantidade": 5, "fator": 0.70 },
-        { "quantidade": 8, "fator": 0.70 },
-        { "quantidade": 10, "fator": 0.65 },
-        { "quantidade": 15, "fator": 0.65 },
-        { "quantidade": 20, "fator": 0.65 },
-        { "quantidade": 50, "fator": 0.60 }
+        {
+          "quantidade": 2,
+          "fator": 0.9
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.65
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.65
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.65
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.6
+        }
       ]
     },
     {
       "categoria": "Soldadores",
       "tabela": [
-        { "quantidade": 2, "fator": 0.45 },
-        { "quantidade": 5, "fator": 0.45 },
-        { "quantidade": 10, "fator": 0.40 },
-        { "quantidade": 50, "fator": 0.30 }
+        {
+          "quantidade": 2,
+          "fator": 0.45
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.45
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.45
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.4
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.4
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.3
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.3
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.3
+        }
+      ]
+    },
+    {
+      "categoria": "Retificadores",
+      "tabela": [
+        {
+          "quantidade": 2,
+          "fator": 0.9
+        },
+        {
+          "quantidade": 4,
+          "fator": 0.9
+        },
+        {
+          "quantidade": 5,
+          "fator": 0.85
+        },
+        {
+          "quantidade": 8,
+          "fator": 0.8
+        },
+        {
+          "quantidade": 10,
+          "fator": 0.75
+        },
+        {
+          "quantidade": 15,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 20,
+          "fator": 0.7
+        },
+        {
+          "quantidade": 50,
+          "fator": 0.7
+        }
+      ]
+    },
+    {
+      "categoria": "Fornos resistivos",
+      "tabela": [
+        {
+          "quantidade": 1,
+          "fator": 1.0
+        },
+        {
+          "quantidade": 2,
+          "fator": 1.0
+        }
       ]
     }
   ]

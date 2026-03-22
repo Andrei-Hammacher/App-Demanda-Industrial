@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Azul elétrico profundo — cor primária -->
+    <color name="primary">#0D47A1</color>
+    <color name="primary_dark">#0A2F6E</color>
+    <color name="primary_light">#E3F2FD</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Superfícies e fundos -->
+    <color name="background">#EEF2F7</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F4F7FB</color>
+
+    <!-- Texto -->
+    <color name="text_primary">#0D1B2A</color>
+    <color name="text_secondary">#546E7A</color>
+    <color name="text_hint">#90A4AE</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_dark">#B3D4F5</color>
+
+    <!-- Semânticas -->
+    <color name="success">#2E7D32</color>
+    <color name="success_light">#E8F5E9</color>
+    <color name="warning">#E65100</color>
+    <color name="warning_light">#FFF3E0</color>
+    <color name="error">#C62828</color>
+    <color name="error_light">#FFEBEE</color>
+
+    <!-- Divisores e bordas -->
+    <color name="divider">#E0E8F0</color>
+    <color name="card_stroke">#D6E0EC</color>
+
+    <!-- Gradiente hero -->
+    <color name="gradient_start">#0D47A1</color>
+    <color name="gradient_end">#1976D2</color>
+
+    <!-- ════ CORES POR GRUPO DE EQUIPAMENTO (stripe lateral) ════ -->
+    <!-- Grupo A — Iluminação e Tomadas: azul -->
+    <color name="stripe_grupo_a">#1565C0</color>
+    <color name="stripe_grupo_a_bg">#E3F2FD</color>
+
+    <!-- Grupo B — Fornos: laranja -->
+    <color name="stripe_grupo_b">#E65100</color>
+    <color name="stripe_grupo_b_bg">#FFF3E0</color>
+
+    <!-- Grupo C — Motores: verde -->
+    <color name="stripe_grupo_c">#2E7D32</color>
+    <color name="stripe_grupo_c_bg">#E8F5E9</color>
+
+    <!-- Retificadores: roxo -->
+    <color name="stripe_retificador">#6A1B9A</color>
+    <color name="stripe_retificador_bg">#F3E5F5</color>
+
+    <!-- Soldadores / Especiais: vermelho-tijolo -->
+    <color name="stripe_especial">#C62828</color>
+    <color name="stripe_especial_bg">#FFEBEE</color>
+
+    <!-- Outros: azul acinzentado -->
+    <color name="stripe_outros">#455A64</color>
+    <color name="stripe_outros_bg">#ECEFF1</color>
+
+    <!-- ════ CORES DE PROJETO (lista de projetos) ════ -->
+    <color name="project_icon_bg">#E3F2FD</color>
 </resources>

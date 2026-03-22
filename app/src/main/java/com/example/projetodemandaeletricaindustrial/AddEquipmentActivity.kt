@@ -1,6 +1,7 @@
 package com.example.projetodemandaeletricaindustrial
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ class AddEquipmentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddEquipmentBinding
     private lateinit var repository: CalculadoraRepository
     private var projetoIdVinculado: Int = -1
+    private var equipamentoEditando: Equipamento? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,28 +22,22 @@ class AddEquipmentActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title = "Adicionar Equipamento"
 
         repository = CalculadoraRepository(this)
         projetoIdVinculado = intent.getIntExtra("PROJETO_ID", -1)
+        equipamentoEditando = intent.getSerializableExtra("EQUIPAMENTO") as? Equipamento
 
-        val tipos = listOf(
-            "Motor",
-            "Iluminação",
-            "Tomada (Área Administrativa)",
-            "Tomada (Área Industrial Mono)",
-            "Tomada (Área Industrial Tri)",
-            "Forno / Estufa (Aquecimento)",
-            "Ar Condicionado",         // <-- CARGA ESPECIAL
-            "Máquina de Solda",        // <-- CARGA ESPECIAL
-            "Outros"
-        )
-        val adapterSpinner = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipos)
-        binding.spinnerTipoEquipamento.setAdapter(adapterSpinner)
+        val modoEdicao = equipamentoEditando != null
+        title = if (modoEdicao) "Editar Equipamento" else "Adicionar Equipamento"
+        binding.btnSalvarEquipamento.text = if (modoEdicao) "Salvar Alterações" else "Salvar Equipamento"
 
-        binding.btnSalvarEquipamento.setOnClickListener {
-            salvarNoBanco()
+        configurarSpinners()
+        if (modoEdicao) preencherCampos(equipamentoEditando!!)
+
+        binding.spinnerTipoEquipamento.setOnItemClickListener { _, _, _, _ ->
+            atualizarCamposParaTipo(binding.spinnerTipoEquipamento.text.toString())
         }
+        binding.btnSalvarEquipamento.setOnClickListener { salvarNoBanco() }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -49,101 +45,194 @@ class AddEquipmentActivity : AppCompatActivity() {
         return true
     }
 
-    // Função auxiliar para automatizar o FU conforme a Planilha 2
+    private fun configurarSpinners() {
+        val tipos = listOf(
+            "Motor",
+            "Iluminação",
+            "Iluminação com Reator",
+            "Tomada (Área Administrativa)",
+            "Tomada (Área SE)",                // ← Planilha1: Área Subestação, FD=1.0
+            "Tomada (Área Industrial Mono)",
+            "Tomada (Área Industrial Tri)",
+            "Forno Resistivo",                 // ← Planilha2/4: FU=1.0, FC=1.0
+            "Forno de Indução",                // ← Planilha2/4: FU=1.0, FC=1.0 (tratado igual ao resistivo)
+            "Retificador",
+            "Ar Condicionado",
+            "Máquina de Solda",
+            "Outros"
+        )
+        binding.spinnerTipoEquipamento.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipos)
+        )
+
+        // CCM1–CCM5 para motores (Planilha: CCM1–CCM5)
+        val opcoesCcm = listOf("CCM1", "CCM2", "CCM3", "CCM4", "CCM5")
+        binding.spinnerCcm.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, opcoesCcm)
+        )
+        binding.spinnerCcm.setText("CCM1", false)
+
+        // QDF1–QDF5 para equipamentos não-motores (Planilha: QDF1–QDF5)
+        val opcoesQdf = listOf("QDF1", "QDF2", "QDF3", "QDF4", "QDF5")
+        binding.spinnerQdf.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, opcoesQdf)
+        )
+        binding.spinnerQdf.setText("QDF1", false)
+    }
+
+    private fun preencherCampos(eq: Equipamento) {
+        binding.spinnerTipoEquipamento.setText(eq.tipo, false)
+        binding.etDescricao.setText(eq.descricao)
+        binding.etQuantidade.setText(eq.quantidade.toString())
+        binding.etPotencia.setText(eq.potenciaOriginal.toString())
+
+        if (eq.tipo.equals("Motor", ignoreCase = true) && eq.ccm.isNotBlank())
+            binding.spinnerCcm.setText(eq.ccm, false)
+
+        if (!eq.tipo.equals("Motor", ignoreCase = true) && eq.qdf.isNotBlank())
+            binding.spinnerQdf.setText(eq.qdf, false)
+
+        // Recupera FP do reator: fp = potenciaOriginal / (potencia × 1000)
+        if (eq.tipo.equals("Iluminação com Reator", ignoreCase = true) && eq.potencia > 0)
+            binding.etFatorPotencia.setText("%.4f".format(eq.potenciaOriginal / (eq.potencia * 1000.0)))
+
+        atualizarCamposParaTipo(eq.tipo)
+    }
+
+    private fun atualizarCamposParaTipo(tipo: String) {
+        val ehMotor  = tipo.equals("Motor", ignoreCase = true)
+        val ehReator = tipo.equals("Iluminação com Reator", ignoreCase = true)
+
+        // CCM apenas para motores; QDF para todos os demais
+        binding.tilCcm.visibility          = if (ehMotor)  View.VISIBLE else View.GONE
+        binding.tilQdf.visibility          = if (!ehMotor) View.VISIBLE else View.GONE
+        binding.tilFatorPotencia.visibility = if (ehReator) View.VISIBLE else View.GONE
+
+        binding.tilPotencia.hint = when {
+            ehMotor  -> "Potência (CV)"
+            ehReator -> "Potência do Reator (W)"
+            else     -> "Potência (W)"
+        }
+        binding.tilQuantidade.hint = if (ehReator) "Quantidade de Lâmpadas" else "Quantidade"
+    }
+
     private fun calcularFatorUtilizacao(cv: Double): Double {
         return when {
-            cv <= 2.5 -> 0.70
-            cv <= 15.0 -> 0.83  // Cobre a faixa de 3 a 15 CV
-            cv <= 40.0 -> 0.85  // Cobre a faixa de 20 a 40 CV
-            else -> 0.87        // Acima de 40 CV
+            cv <= 2.5  -> 0.70
+            cv <= 15.0 -> 0.83
+            cv <= 40.0 -> 0.85
+            else       -> 0.87
         }
     }
 
     private fun salvarNoBanco() {
-        val tipo = binding.spinnerTipoEquipamento.text.toString()
-        val descricao = binding.etDescricao.text.toString()
-        val quantidade = binding.etQuantidade.text.toString().toIntOrNull() ?: 0
+        val tipo             = binding.spinnerTipoEquipamento.text.toString()
+        val descricao        = binding.etDescricao.text.toString()
+        val quantidade       = binding.etQuantidade.text.toString().toIntOrNull() ?: 0
         val potenciaDigitada = binding.etPotencia.text.toString().toDoubleOrNull() ?: 0.0
+        val ccm              = if (tipo.equals("Motor", ignoreCase = true))
+            binding.spinnerCcm.text.toString().trim() else ""
+        val qdf              = if (!tipo.equals("Motor", ignoreCase = true))
+            binding.spinnerQdf.text.toString().trim() else ""
 
         if (descricao.isEmpty() || potenciaDigitada <= 0.0 || projetoIdVinculado == -1) {
             Toast.makeText(this, "Erro: Preencha todos os campos corretamente", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (tipo.equals("Motor", ignoreCase = true) && ccm.isEmpty()) {
+            Toast.makeText(this, "Selecione o painel de origem (CCM) do motor", Toast.LENGTH_SHORT).show()
             return
         }
 
         var demandaCalculadaUnitaria = 0.0
 
         when {
-            // GRUPO C: Motores
+            // ── MOTOR ─────────────────────────────────────────────────────────
             tipo.equals("Motor", ignoreCase = true) -> {
                 val dados = repository.buscarFatoresPorCV(potenciaDigitada)
-
-                // IMPLEMENTAÇÃO DA OPÇÃO 2: FU Automático baseado na potência
                 val fu = calcularFatorUtilizacao(potenciaDigitada)
-                val potenciaWats = potenciaDigitada * 735.5 // 1 CV = 735.5 Watts
-
-                if (dados != null) {
-                    // CENÁRIO 1: Motor encontrado na tabela exata (JSON)
-                    // Fórmula: (Watts * FU) / (Rendimento * FP) / 1000 = kVA
-                    demandaCalculadaUnitaria = (potenciaWats * fu) / (dados.rendimento * dados.fp) / 1000.0
-                } else {
-                    // CENÁRIO 2 (CORREÇÃO): Motor não listado (ex: 12 CV, 50 CV)
-                    // Usamos valores padrão de mercado para não zerar o cálculo
-                    val rendimentoEstimado = 0.85
-                    val fpEstimado = 0.83
-
-                    demandaCalculadaUnitaria = (potenciaWats * fu) / (rendimentoEstimado * fpEstimado) / 1000.0
-                }
+                val potenciaWats = potenciaDigitada * 735.5
+                demandaCalculadaUnitaria = if (dados != null)
+                    (potenciaWats * fu) / (dados.rendimento * dados.fp) / 1000.0
+                else
+                    (potenciaWats * fu) / (0.85 * 0.83) / 1000.0
             }
 
-            // GRUPO A: Iluminação e Tomadas
-            tipo.contains("Tomada", ignoreCase = true) || tipo.contains("Iluminação", ignoreCase = true) -> {
+            // ── ILUMINAÇÃO COM REATOR (Planilha1) ─────────────────────────────
+            tipo.equals("Iluminação com Reator", ignoreCase = true) -> {
+                val fpReator = binding.etFatorPotencia.text.toString().toDoubleOrNull()
+                if (fpReator == null || fpReator <= 0.0 || fpReator > 1.0) {
+                    Toast.makeText(this,
+                        "Informe o Fator de Potência do Reator (entre 0 e 1, ex: 0.92)",
+                        Toast.LENGTH_LONG).show()
+                    return
+                }
+                demandaCalculadaUnitaria = (potenciaDigitada / fpReator) / 1000.0
+            }
+
+            // ── ILUMINAÇÃO SIMPLES e TOMADAS (inclui Área SE) ─────────────────
+            tipo.contains("Iluminação", ignoreCase = true) ||
+                    tipo.contains("Tomada", ignoreCase = true) -> {
                 val fd = repository.buscarFatorGrupoA(tipo)
                 demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * fd
             }
 
-            // GRUPO B: Aquecimento
-            tipo.contains("Aquecimento", ignoreCase = true) || tipo.contains("Forno", ignoreCase = true) -> {
-                // Para aquecimento (Grupo B), FD/FU costuma ser 1.0 (100%)
-                demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
+            // ── FORNO RESISTIVO e FORNO DE INDUÇÃO (Planilha2: FU=1.0) ────────
+            // A simultaneidade FC=1.0 é aplicada no resumo via tabela Fornos resistivos
+            tipo.contains("Forno", ignoreCase = true) -> {
+                demandaCalculadaUnitaria = potenciaDigitada / 1000.0
             }
 
-            // --- NOVIDADE: GRUPOS ESPECIAIS (D e E) ---
+            // ── RETIFICADOR ───────────────────────────────────────────────────
+            tipo.contains("Retificador", ignoreCase = true) -> {
+                demandaCalculadaUnitaria = potenciaDigitada / 1000.0
+            }
 
-            // GRUPO D: Ar Condicionado
+            // ── AR CONDICIONADO ───────────────────────────────────────────────
             tipo.contains("Ar Condicionado", ignoreCase = true) -> {
-                // FD de 100% (1.0) para climatização industrial/comercial
-                demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
+                demandaCalculadaUnitaria = potenciaDigitada / 1000.0
             }
 
-            // GRUPO E: Máquinas de Solda
+            // ── MÁQUINA DE SOLDA (Planilha2: FU=1.0; Planilha4 controla FC) ──
             tipo.contains("Solda", ignoreCase = true) -> {
-                // FD estimado de 70% (0.70) considerando o ciclo de trabalho da solda
-                demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 0.70
+                demandaCalculadaUnitaria = potenciaDigitada / 1000.0
             }
 
-            // OUTROS
-            else -> demandaCalculadaUnitaria = (potenciaDigitada / 1000.0) * 1.0
+            else -> demandaCalculadaUnitaria = potenciaDigitada / 1000.0
         }
 
-        val novoEquipamento = Equipamento(
-            projetoId = projetoIdVinculado,
-            tipo = tipo,
-            descricao = descricao,
-            quantidade = quantidade,
-            potencia = demandaCalculadaUnitaria // Agora salva o valor unitário já calculado em kVA
+        val equipamento = Equipamento(
+            id               = equipamentoEditando?.id ?: 0,
+            projetoId        = equipamentoEditando?.projetoId ?: projetoIdVinculado,
+            tipo             = tipo,
+            descricao        = descricao,
+            quantidade       = quantidade,
+            potencia         = demandaCalculadaUnitaria,
+            potenciaOriginal = potenciaDigitada,
+            ccm              = ccm,
+            qdf              = qdf
         )
 
         lifecycleScope.launch {
-            val database = AppDatabase.getDatabase(this@AddEquipmentActivity)
-            database.equipamentoDao().inserir(novoEquipamento)
+            val dao = AppDatabase.getDatabase(this@AddEquipmentActivity).equipamentoDao()
+            if (equipamentoEditando != null) dao.atualizar(equipamento)
+            else dao.inserir(equipamento)
 
             runOnUiThread {
-                // Ajuste para a mensagem de sucesso fazer mais sentido dependendo da carga
-                if (tipo.equals("Motor", ignoreCase = true)) {
-                    Toast.makeText(this@AddEquipmentActivity, "Salvo! FU usado: ${calcularFatorUtilizacao(potenciaDigitada)}", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(this@AddEquipmentActivity, "Equipamento salvo com sucesso!", Toast.LENGTH_SHORT).show()
+                val acao = if (equipamentoEditando != null) "Atualizado" else "Salvo"
+                val msg = when {
+                    tipo.equals("Motor", ignoreCase = true) -> {
+                        val fu = calcularFatorUtilizacao(potenciaDigitada)
+                        "$acao! [$ccm] Demanda/un: ${"%.3f".format(demandaCalculadaUnitaria)} kVA (FU: $fu)"
+                    }
+                    tipo.equals("Iluminação com Reator", ignoreCase = true) -> {
+                        "$acao! $quantidade lâmpadas × ${"%.4f".format(demandaCalculadaUnitaria)} kVA/un = ${"%.3f".format(demandaCalculadaUnitaria * quantidade)} kVA total"
+                    }
+                    else -> "Equipamento ${"${acao.lowercase()}".replaceFirstChar { it.uppercase() }} com sucesso!"
                 }
+                Toast.makeText(this@AddEquipmentActivity, msg, Toast.LENGTH_LONG).show()
+                // Sinaliza sucesso para ListaCargasActivity mostrar Snackbar
+                setResult(RESULT_OK)
                 finish()
             }
         }

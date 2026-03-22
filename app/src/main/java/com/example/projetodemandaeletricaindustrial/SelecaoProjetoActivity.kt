@@ -2,12 +2,12 @@ package com.example.projetodemandaeletricaindustrial
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.projetodemandaeletricaindustrial.databinding.ActivitySelecaoProjetoBinding
 import kotlinx.coroutines.launch
 
@@ -22,15 +22,12 @@ class SelecaoProjetoActivity : AppCompatActivity() {
         binding = ActivitySelecaoProjetoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Habilita a seta de voltar na barra superior
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         title = "Meus Projetos"
 
         configurarRecyclerView()
     }
 
-    // NOVA FUNÇÃO: Faz a seta "Voltar" funcionar fechando a tela atual
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
@@ -39,13 +36,11 @@ class SelecaoProjetoActivity : AppCompatActivity() {
     private fun configurarRecyclerView() {
         adapter = ProjetoAdapter(
             listaProjetos,
-            onClick = { projeto -> abrirProjeto(projeto) },
+            onClick  = { projeto -> abrirProjeto(projeto) },
             onDelete = { projeto -> mostrarDialogoExclusao(projeto) }
         )
-
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerProjetos)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        binding.recyclerProjetos.layoutManager = LinearLayoutManager(this)
+        binding.recyclerProjetos.adapter = adapter
     }
 
     override fun onResume() {
@@ -61,15 +56,26 @@ class SelecaoProjetoActivity : AppCompatActivity() {
             listaProjetos.clear()
             listaProjetos.addAll(projetosDoBanco)
             adapter.notifyDataSetChanged()
+
+            // Atualiza contador e empty state
+            val count = listaProjetos.size
+            binding.tvContadorProjetos.text =
+                if (count == 1) "1 projeto" else "$count projetos"
+
+            // Toggle: lista visível ↔ empty state visível
+            val temProjetos = count > 0
+            binding.recyclerProjetos.visibility  = if (temProjetos) View.VISIBLE else View.GONE
+            binding.layoutEmptyState.visibility  = if (temProjetos) View.GONE   else View.VISIBLE
         }
     }
 
     private fun abrirProjeto(projeto: Projeto) {
-        val intent = Intent(this, ListaCargasActivity::class.java).apply {
-            putExtra("PROJETO_ID", projeto.id)
-            putExtra("PROJETO_NOME", projeto.nome)
-        }
-        startActivity(intent)
+        startActivity(
+            Intent(this, ListaCargasActivity::class.java).apply {
+                putExtra("PROJETO_ID", projeto.id)
+                putExtra("PROJETO_NOME", projeto.nome)
+            }
+        )
     }
 
     private fun mostrarDialogoExclusao(projeto: Projeto) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Pasta externa do app — onde o PDF é salvo -->
+    <external-files-path
+        name="relatorios"
+        path="."/>
+</paths>
