@@ -299,11 +299,11 @@ class ListaCargasActivity : AppCompatActivity() {
                 tvTrafoSugerido.text = "--"
             }
 
-            tvTomadaAdm.text       = "T1Φ_ADM (Área Admin): ${"%.2f".format(demAdm)} kVA"
-            tvTomadaSe.text        = "T1Φ_SE (Subestação): ${"%.2f".format(demSe)} kVA"
-            tvTomadaIndMono.text   = "T1Φ_IND (Ind. Mono): ${"%.2f".format(demIndMono)} kVA"
-            tvTomadaIndTri.text    = "T3Φ_IND (Ind. Tri): ${"%.2f".format(demIndTri)} kVA"
-            tvIluminacaoTotal.text = "Iluminação: ${"%.2f".format(demIlum)} kVA"
+            tvTomadaAdm.text       = "🔌 Tomadas Admin (Mono): ${"%.2f".format(demAdm)} kVA"
+            tvTomadaSe.text        = "🔌 Tomadas Subestação (Mono): ${"%.2f".format(demSe)} kVA"
+            tvTomadaIndMono.text   = "🔌 Tomadas Ind. (Mono): ${"%.2f".format(demIndMono)} kVA"
+            tvTomadaIndTri.text    = "🔌 Tomadas Ind. (Tri): ${"%.2f".format(demIndTri)} kVA"
+            tvIluminacaoTotal.text = "💡 Iluminação Geral: ${"%.2f".format(demIlum)} kVA"
             tvResumoCcm.text       = textoCcm
             tvResumoQdf.text       = textoQdf
         }
