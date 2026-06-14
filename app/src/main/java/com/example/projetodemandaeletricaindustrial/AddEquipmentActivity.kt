@@ -92,8 +92,18 @@ class AddEquipmentActivity : AppCompatActivity() {
         if (!eq.tipo.equals("Motor", ignoreCase = true) && eq.qdf.isNotBlank())
             binding.spinnerQdf.setText(eq.qdf, false)
 
+        // --- NOVO: LER OS DADOS CUSTOMIZADOS DO BANCO ---
+        // Se o motor tem um FP salvo no banco, escreve na caixinha
+        if (eq.fpCustomizado != null) {
+            binding.etFatorPotencia.setText(eq.fpCustomizado.toString())
+        }
+        // Se o motor tem um Rendimento salvo no banco, escreve na caixinha
+        if (eq.rendimentoCustomizado != null) {
+            binding.etRendimento.setText(eq.rendimentoCustomizado.toString())
+        }
+
         // Recupera FP do reator: fp = potenciaOriginal / (potencia × 1000)
-        if (eq.tipo.equals("Iluminação com Reator", ignoreCase = true) && eq.potencia > 0)
+        if (eq.tipo.equals("Iluminação com Reator", ignoreCase = true) && eq.potencia > 0 && eq.fpCustomizado == null)
             binding.etFatorPotencia.setText("%.4f".format(eq.potenciaOriginal / (eq.potencia * 1000.0)))
 
         atualizarCamposParaTipo(eq.tipo)
@@ -104,16 +114,27 @@ class AddEquipmentActivity : AppCompatActivity() {
         val ehReator = tipo.equals("Iluminação com Reator", ignoreCase = true)
 
         // CCM apenas para motores; QDF para todos os demais
-        binding.tilCcm.visibility          = if (ehMotor)  View.VISIBLE else View.GONE
-        binding.tilQdf.visibility          = if (!ehMotor) View.VISIBLE else View.GONE
-        binding.tilFatorPotencia.visibility = if (ehReator) View.VISIBLE else View.GONE
+        binding.tilCcm.visibility = if (ehMotor) View.VISIBLE else View.GONE
+        binding.tilQdf.visibility = if (!ehMotor) View.VISIBLE else View.GONE
 
+        // --- É AQUI QUE A MÁGICA ACONTECE ---
+        // Mostra a linha com os novos campos se for Motor ou Reator
+        binding.llDadosAvancados.visibility = if (ehReator || ehMotor) View.VISIBLE else View.GONE
+
+        // O rendimento só faz sentido para Motores, então escondemos do Reator
+        binding.tilRendimento.visibility = if (ehMotor) View.VISIBLE else View.GONE
+
+        // Atualiza as dicas (hints) dinamicamente
         binding.tilPotencia.hint = when {
             ehMotor  -> "Potência (CV)"
             ehReator -> "Potência do Reator (W)"
             else     -> "Potência (W)"
         }
+
         binding.tilQuantidade.hint = if (ehReator) "Quantidade de Lâmpadas" else "Quantidade"
+
+        // Se for motor avisa que é opcional, se for reator é obrigatório
+        binding.tilFatorPotencia.hint = if (ehMotor) "FP (opcional)" else "FP do Reator"
     }
 
     private fun calcularFatorUtilizacao(cv: Double): Double {
@@ -134,6 +155,8 @@ class AddEquipmentActivity : AppCompatActivity() {
             binding.spinnerCcm.text.toString().trim() else ""
         val qdf              = if (!tipo.equals("Motor", ignoreCase = true))
             binding.spinnerQdf.text.toString().trim() else ""
+        val fpDigitado = binding.etFatorPotencia.text.toString().toDoubleOrNull()
+        val rendimentoDigitado = binding.etRendimento.text.toString().toDoubleOrNull()
 
         if (descricao.isEmpty() || potenciaDigitada <= 0.0 || projetoIdVinculado == -1) {
             Toast.makeText(this, "Erro: Preencha todos os campos corretamente", Toast.LENGTH_SHORT).show()
@@ -149,13 +172,19 @@ class AddEquipmentActivity : AppCompatActivity() {
         when {
             // ── MOTOR ─────────────────────────────────────────────────────────
             tipo.equals("Motor", ignoreCase = true) -> {
-                val dados = repository.buscarFatoresPorCV(potenciaDigitada)
+                val dadosPadrao = repository.buscarFatoresPorCV(potenciaDigitada)
                 val fu = calcularFatorUtilizacao(potenciaDigitada)
                 val potenciaWats = potenciaDigitada * 735.5
-                demandaCalculadaUnitaria = if (dados != null)
-                    (potenciaWats * fu) / (dados.rendimento * dados.fp) / 1000.0
-                else
-                    (potenciaWats * fu) / (0.85 * 0.83) / 1000.0
+
+                val rendimentoDigitado = binding.etRendimento.text.toString().toDoubleOrNull()
+
+                val fpSeguranca = 0.83
+                val rendimentoSeguranca = 0.85
+
+                val fpFinal = fpDigitado ?: dadosPadrao?.fp ?: fpSeguranca
+                val rendimentoFinal = rendimentoDigitado ?: dadosPadrao?.rendimento ?: rendimentoSeguranca
+
+                demandaCalculadaUnitaria = (potenciaWats * fu) / (rendimentoFinal * fpFinal) / 1000.0
             }
 
             // ── ILUMINAÇÃO COM REATOR (Planilha1) ─────────────────────────────
@@ -210,7 +239,10 @@ class AddEquipmentActivity : AppCompatActivity() {
             potencia         = demandaCalculadaUnitaria,
             potenciaOriginal = potenciaDigitada,
             ccm              = ccm,
-            qdf              = qdf
+            qdf              = qdf,
+            fpCustomizado    = fpDigitado,
+            rendimentoCustomizado = rendimentoDigitado
+
         )
 
         lifecycleScope.launch {

@@ -30,6 +30,26 @@ class CalculadoraRepository(private val context: Context) {
         return carregarDadosMotores().find { it.cv == cvDigitado }
     }
 
+    fun buscarFatorPotenciaPadrao(cvDigitado: Double, tipo: String): Double {
+        if (!tipo.equals("Motor", ignoreCase = true)) return 1.0
+        return when {
+            cvDigitado <= 2.5  -> 0.70
+            cvDigitado <= 15.0 -> 0.83
+            cvDigitado <= 40.0 -> 0.85
+            else               -> 0.87
+        }
+    }
+
+    fun buscarRendimentoPadrao(cvDigitado: Double, tipo: String): Double {
+        if (!tipo.equals("Motor", ignoreCase = true)) return 1.0
+        return when {
+            cvDigitado <= 2.5  -> 0.80 // Rendimento padrão para motores pequenos
+            cvDigitado <= 15.0 -> 0.85 // Rendimento padrão para motores médios
+            cvDigitado <= 40.0 -> 0.88 // Rendimento padrão para motores grandes
+            else               -> 0.92 // Rendimento padrão para motores muito grandes
+        }
+    }
+
     fun buscarFatorUtilizacao(cvDigitado: Double, tipo: String): Double {
         if (!tipo.equals("Motor", ignoreCase = true)) return 1.0
         return when {

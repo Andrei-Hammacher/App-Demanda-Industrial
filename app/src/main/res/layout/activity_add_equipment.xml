@@ -16,7 +16,6 @@
         android:paddingTop="16dp"
         android:paddingBottom="32dp">
 
-        <!-- ═══ SEÇÃO 1: Identificação ════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +35,6 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
 
-                <!-- Cabeçalho da seção -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,7 +57,6 @@
                         android:textColor="@color/text_primary"/>
                 </LinearLayout>
 
-                <!-- Tipo de Equipamento -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.App.TextInputLayout.Dropdown"
                     android:layout_width="match_parent"
@@ -75,7 +72,6 @@
                         android:paddingBottom="16dp"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Descrição -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.App.TextInputLayout"
                     android:layout_width="match_parent"
@@ -91,8 +87,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ═══ SEÇÃO 2: Painel Elétrico ══════════════════════════════ -->
-        <!-- CCM — visível apenas para Motor -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tilCcm"
             android:layout_width="match_parent"
@@ -151,7 +145,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- QDF — visível para equipamentos não-motores -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tilQdf"
             android:layout_width="match_parent"
@@ -210,7 +203,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ═══ SEÇÃO 3: Dados Técnicos ═══════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -250,7 +242,6 @@
                         android:textColor="@color/text_primary"/>
                 </LinearLayout>
 
-                <!-- Linha: Quantidade + Potência lado a lado -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -288,25 +279,47 @@
 
                 </LinearLayout>
 
-                <!-- FP do Reator — visível só para Iluminação com Reator -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilFatorPotencia"
-                    style="@style/Widget.App.TextInputLayout"
+                <LinearLayout
+                    android:id="@+id/llDadosAvancados"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fator de Potência do Reator (ex: 0.92)"
+                    android:orientation="horizontal"
                     android:visibility="gone">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFatorPotencia"
-                        android:layout_width="match_parent"
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilFatorPotencia"
+                        style="@style/Widget.App.TextInputLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1"
+                        android:hint="Fator de Potência"
+                        android:layout_marginEnd="8dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etFatorPotencia"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilRendimento"
+                        style="@style/Widget.App.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Rendimento (ex: 0.85)">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRendimento"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ═══ BOTÃO SALVAR ══════════════════════════════════════════ -->
         <Button
             android:id="@+id/btnSalvarEquipamento"
             android:layout_width="match_parent"

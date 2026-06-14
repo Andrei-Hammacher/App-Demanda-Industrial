@@ -14,5 +14,8 @@ data class Equipamento(
     val potencia: Double,               // Demanda unitária calculada em kVA
     val potenciaOriginal: Double = 0.0, // Valor original digitado (CV para motores, W para demais)
     val ccm: String = "",               // Painel de motores (CCM1–CCM5). Vazio para não-motores.
-    val qdf: String = ""                // Painel de equipamentos não-motores (QDF1–QDF5). Vazio para motores.
+    val qdf: String = "",                // Painel de equipamentos não-motores (QDF1–QDF5). Vazio para motores.
+
+    val fpCustomizado: Double? = null,
+    val rendimentoCustomizado: Double? = null
 ) : Serializable
